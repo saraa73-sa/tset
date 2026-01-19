@@ -77,10 +77,14 @@ function sendTasmee() {
     faces: document.getElementById("faces").value
   };
 
-    fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
+fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+})
+
   .then(res => res.json())
   .then(() => {
     document.getElementById("msg").textContent =
@@ -94,5 +98,6 @@ function sendTasmee() {
 }
 </script>
 </body>
+</html>
   
 
