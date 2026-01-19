@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>بطاقة إجازة</title>
+</head>
+<body>
+
+<h2>بطاقة إجازة</h2>
+
+<input id="name" placeholder="الاسم"><br><br>
+<input id="reason" placeholder="سبب الإجازة"><br><br>
+<input id="from" type="date"><br><br>
+<input id="to" type="date"><br><br>
+
+<button onclick="send()">إرسال</button>
+
+<p id="msg"></p>
+
+<script>
+function send() {
+  const data = {
+    name: document.getElementById("name").value,
+    reason: document.getElementById("reason").value,
+    from: document.getElementById("from").value,
+    to: document.getElementById("to").value
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById("msg").textContent = "تم إرسال بطاقة الإجازة ✅";
+  })
+  .catch(() => {
+    document.getElementById("msg").textContent = "فشل الإرسال ❌";
+  });
+}
+</script>
+
+</body>
+</html>
