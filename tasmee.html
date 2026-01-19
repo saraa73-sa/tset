@@ -1,0 +1,82 @@
+<h2>بطاقة التسميع</h2>
+
+<input id="name" placeholder="الاسم"><br><br>
+<input id="lesson" placeholder="الدرس"><br><br>
+<input id="review" placeholder="المراجعة"><br><br>
+
+<label>من سورة:</label><br>
+<input list="surahs" id="fromSurah"><br><br>
+
+<label>إلى سورة:</label><br>
+<input list="surahs" id="toSurah"><br><br>
+
+<datalist id="surahs"></datalist>
+
+<label>عدد الأوجه:</label><br>
+<input id="faces" readonly><br><br>
+
+<button onclick="sendTasmee()">إرسال</button>
+
+<p id="msg"></p>
+
+<script>
+const SURAH_PAGES = [
+  { name: "الفاتحة", pages: 1 },
+  { name: "البقرة", pages: 48 },
+  { name: "آل عمران", pages: 50 },
+  { name: "النساء", pages: 55 },
+  { name: "المائدة", pages: 42 }
+];
+
+  const list = document.getElementById("surahs");
+
+SURAH_PAGES.forEach(s => {
+  const option = document.createElement("option");
+  option.value = s.name;
+  list.appendChild(option);
+});
+
+  function calculateFaces() {
+  const from = document.getElementById("fromSurah").value;
+  const to = document.getElementById("toSurah").value;
+
+  const fromSurah = SURAH_PAGES.find(s => s.name === from);
+  const toSurah = SURAH_PAGES.find(s => s.name === to);
+
+  if (!fromSurah || !toSurah) return;
+
+  const faces = Math.abs(toSurah.pages - fromSurah.pages) + 1;
+  document.getElementById("faces").value = faces;
+}
+
+document.getElementById("fromSurah").addEventListener("change", calculateFaces);
+document.getElementById("toSurah").addEventListener("change", calculateFaces);
+
+  function sendTasmee() {
+  const data = {
+    type: "tasmee",
+    name: document.getElementById("name").value,
+    lesson: document.getElementById("lesson").value,
+    review: document.getElementById("review").value,
+    fromSurah: document.getElementById("fromSurah").value,
+    toSurah: document.getElementById("toSurah").value,
+    faces: document.getElementById("faces").value
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById("msg").textContent =
+      "تم إرسال بطاقة التسميع ✅";
+  })
+  .catch(() => {
+    document.getElementById("msg").textContent =
+      "فشل الإرسال ❌";
+  });
+}
+
+  
+</script>
