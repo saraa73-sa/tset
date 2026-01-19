@@ -52,7 +52,8 @@ SURAH_PAGES.forEach(s => {
 document.getElementById("fromSurah").addEventListener("change", calculateFaces);
 document.getElementById("toSurah").addEventListener("change", calculateFaces);
 
-  function sendTasmee() {
+
+function sendTasmee() {
   const data = {
     type: "tasmee",
     name: document.getElementById("name").value,
@@ -75,6 +76,7 @@ document.getElementById("toSurah").addEventListener("change", calculateFaces);
       "فشل الإرسال ❌";
   });
 }
+</script>
 
   
-</script>
+
