@@ -62,26 +62,25 @@ document.getElementById("toSurah").addEventListener("change", calculateFaces);
 
 
 document.getElementById("tasmeeForm").addEventListener("submit", function (e) {
-  e.preventDefault(); // يمنع التحديث
+  e.preventDefault();
   sendTasmee();
 });
 
 function sendTasmee() {
-  console.log("زر الإرسال يعمل"); // 👈 اختبار
+  console.log("زر الإرسال يعمل");
 
-  const data = {
-    type: "tasmee",
-    name: document.getElementById("name").value,
-    lesson: document.getElementById("lesson").value,
-    review: document.getElementById("review").value,
-    faces: document.getElementById("faces").value
-  };
+  const formData = new FormData(); // ✅ هذا السطر هو الحل
 
-fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
-  method: "POST",
+  formData.append("type", "tasmee");
+  formData.append("name", document.getElementById("name").value);
+  formData.append("lesson", document.getElementById("lesson").value);
+  formData.append("review", document.getElementById("review").value);
+  formData.append("faces", document.getElementById("faces").value);
+
+  fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
+    method: "POST",
     body: formData
   })
-
   .then(res => res.json())
   .then(() => {
     document.getElementById("msg").textContent =
