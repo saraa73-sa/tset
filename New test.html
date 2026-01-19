@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>اختبار الاتصال</title>
+</head>
+<body>
+
+<h2>اختبار الاتصال مع Google</h2>
+<button onclick="test()">اختبر الآن</button>
+
+<pre id="result">اضغط الزر</pre>
+
+<script>
+function test() {
+  fetch("https://script.google.com/macros/s/AKfycbwC9TL0l8uPi0qPy_CMTxQh7w-Vvi52rWePBP3rABRnAYLUhgzaZUTOHsbl2gnzwANP/exec", {
+    method: "POST"
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("result").textContent =
+      JSON.stringify(data, null, 2);
+  })
+  .catch(err => {
+    document.getElementById("result").textContent =
+      "❌ فشل الاتصال";
+  });
+}
+</script>
+
+</body>
+</html>
