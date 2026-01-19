@@ -54,6 +54,8 @@ document.getElementById("toSurah").addEventListener("change", calculateFaces);
 
 
 function sendTasmee() {
+  document.querySelector("button").disabled = true;
+
   const data = {
     type: "tasmee",
     name: document.getElementById("name").value,
@@ -76,6 +78,10 @@ function sendTasmee() {
       "فشل الإرسال ❌";
   });
 }
+  document.getElementById("tasmeeForm").addEventListener("submit", function (e) {
+  e.preventDefault(); // ⛔ يمنع الإرسال التلقائي
+  sendTasmee();
+});
 </script>
 
   
