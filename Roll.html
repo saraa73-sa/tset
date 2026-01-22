@@ -109,14 +109,18 @@ fetch(WEB_APP_URL, {
     name: name,
     rollNumber: rollNumber
   })
+})
+.then(r => r.text())
+.then(msg => {
+  if (msg.startsWith("❌")) throw new Error(msg);
+
+  btn.textContent = "✔️ تم الحجز بنجاح";
+  btn.style.backgroundColor = "#059669";
+})
+.catch(err => {
+  btn.textContent = "❌ " + err.message;
+  btn.style.backgroundColor = "#dc2626";
 });
-  .then(r => r.text())
-  .then(msg => {
-    if (msg.startsWith("❌")) throw new Error(msg);
-
-    btn.textContent = "✔️ تم الحجز بنجاح";
-    btn.style.backgroundColor = "#059669";
-
     document.getElementById("dorName").value = "";
     loadAvailableNumbers();
 
