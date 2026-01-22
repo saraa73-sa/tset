@@ -107,7 +107,7 @@ fetch(WEB_APP_URL, {
   body: JSON.stringify({
     action: "roll",
     name: name,
-    rollNumber: rollNumber
+    rollNumber: number
   })
 })
 .then(r => r.text())
