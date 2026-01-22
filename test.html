@@ -96,15 +96,15 @@ document.getElementById("dorForm").addEventListener("submit", function(e) {
   btn.textContent = "⏳ جاري الحجز والتحقق...";
   btn.style.backgroundColor = "#9ca3af";
 
-  fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "roll",
-      name: name,
-      rollNumber: number
-    })
-  })
+const formData = new URLSearchParams();
+formData.append('action', 'roll');
+formData.append('name', name);
+formData.append('rollNumber', number);
+
+fetch(WEB_APP_URL, {
+  method: 'POST',
+  body: formData
+})
   .then(r => r.text())
   .then(msg => {
     if (msg.startsWith("❌")) throw new Error(msg);
@@ -139,3 +139,4 @@ document.getElementById("dorForm").addEventListener("submit", function(e) {
 
 </body>
 </html>
+
