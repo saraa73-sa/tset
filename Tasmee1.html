@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>بطاقة التسميع</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { background:#f5f3ee; font-family:'Cairo', Tahoma, Arial; margin:0; padding:40px; }
+.card { max-width:600px; margin:auto; background:#fff; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.08); overflow:hidden; }
+.header { background:linear-gradient(135deg,#065f46,#047857); color:white; text-align:center; padding:32px 20px; }
+.header h1 { margin:0; font-size:28px; font-weight:700; }
+.header p { margin-top:10px; font-size:14px; opacity:0.9; }
+form { padding:30px; }
+.field { margin-bottom:22px; }
+label { display:block; font-weight:600; margin-bottom:6px; color:#064e3b; }
+label span { color:#b91c1c; }
+small { display:block; color:#555; font-size:13px; margin-bottom:8px; line-height:1.6; }
+input[type="text"], input[type="number"], select { width:100%; padding:12px; border-radius:10px; border:1px solid #d1d5db; font-size:14px; font-family:'Cairo'; box-sizing:border-box; }
+select { cursor:pointer; }
+button { width:100%; background:#065f46; color:white; border:none; padding:14px; border-radius:12px; font-size:16px; font-family:'Cairo'; font-weight:600; cursor:pointer; transition:0.3s; }
+button:hover { background:#047857; }
+.footer { text-align:center; padding:18px; font-size:14px; color:#065f46; background:#f0fdf4; }
+.row { display:flex; gap:10px; }
+.row select { flex:1; }
+.row input {  margin-bottom:6px;}
+.custom-select {
+  position: relative;
+  flex: 1;
+}
+
+.selected {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 105%;
+  right: 0;
+  left: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  max-height: 260px;
+  overflow: hidden;
+  z-index: 20;
+}
+
+.dropdown input {
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  width: 100%;
+  outline: none;
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: #f0fdf4;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 50%;
+  transform: translateX(50%);
+  min-width: 260px;
+  max-width: 90%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-family: 'Cairo';
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  bottom: 40px;
+}
+
+.toast.success {
+  background: #059669;
+}
+
+.toast.error {
+  background: #dc2626;
+}
+
+.toast.info {
+  background: #065f46;
+}
+
+.custom-select {
+  position: relative;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  background: white;
+  width: 100%;
+  border: 1px solid #ccc;
+  z-index: 999;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: #f3f4f6;
+}
+
+.selected {
+  padding: 12px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #fff;
+}
+
+.result-box {
+  margin-top:10px; 
+  padding:10px; 
+  background:#f0fdf4; 
+  border:1px solid #065f46;  /* اللون الطبيعي */
+  border-radius:6px; 
+  color:#065f46; 
+  font-weight:600; 
+  text-align:center; 
+  transition: border-color 0.3s ease, color 0.3s ease; /* تأثير سلس */
+}
+
+</style>
+</head>
+<body>
+  <div class="card">
+  <div class="header">
+    <h1>بطاقة التسميع</h1>
+    <p>تسجيل حصاد الطالبة</p>
+  </div>
+
+  <form id="tasmeeForm">
+    <!-- اسم الطالبة -->
+    <div class="field">
+      <label>اسم الطالبة الثلاثي <span>*</span></label>
+      <input type="text" id="tasmeeName" required>
+    </div>
+
+    <!-- الدرس -->
+    <div class="field">
+      <label>الدرس</label>
+      <small>إذا لم يوجد لديك درس اترك الخانة فارغة</small>
+      <input type="text" id="tasmeeLesson">
+    </div>
+
+    <!-- المراجعة -->
+    <div class="field">
+      <label>المراجعة</label>
+      <small>إذا لم توجد لديك مراجعة اترك الخانة فارغة</small>
+      <input type="text" id="tasmeeReview">
+    </div>
+
+    <!-- حساب عدد الأوجه -->
+    <div class="field">
+      <label>حساب عدد الأوجه</label>
+      <small>اختر السور أدناه ليتم الحساب تلقائيًا</small>
+
+      <div class="row">
+        <!-- سورة البداية -->
+        <div id="startBox" class="custom-select">
+          <div class="selected" onclick="toggleList('start')">اختر سورة البداية</div>
+          <div class="dropdown">
+            <input type="text" placeholder="بحث..." oninput="filterSurahs(this,'start')" />
+            <ul></ul>
+          </div>
+          <input type="hidden" id="startSurah">
+        </div>
+
+        <!-- سورة النهاية -->
+        <div id="endBox" class="custom-select">
+          <div class="selected" onclick="toggleList('end')">اختر سورة النهاية</div>
+          <div class="dropdown">
+            <input type="text" placeholder="بحث..." oninput="filterSurahs(this,'end')" />
+            <ul></ul>
+          </div>
+          <input type="hidden" id="endSurah">
+        </div>
+      </div>
+
+      <!-- التنبيه والنتائج -->
+      <div class="warning" id="surahWarning">⚠️ سورة البداية يجب أن تكون قبل سورة النهاية </div>
+      <div id="facesBox" class="result-box">
+        <input type="hidden" id="tasmeeFaces" name="faces">
+        <span id="facesResult">0</span> وجه
+      </div>
+    </div>
+
+    <!-- التنبيهات المنبثقة -->
+    <div id="toast" class="toast"></div>
+
+    <button type="submit">إرسال البطاقة</button>
+  </form>
+
+  <div class="footer">نسأل الله التوفيق والسداد 🌿</div>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz63m4J4O_C8zZC2Lsuyvi1tMbvUz1vO4bkfi-KJQvHw9AFtsTKdBxmwSJj7j_OqnVD/exec";
+
+/* ===============================
+   تحميل السور
+================================ */
+window.addEventListener("load", () => {
+  fetch(`${WEB_APP_URL}?action=surahs`)
+    .then(r => r.json())
+    .then(populateDropdowns)
+    .catch(() => showToast("❌ فشل تحميل السور", "error"));
+});
+
+let surahList = [];
+
+/* ===============================
+   تعبئة القوائم
+================================ */
+function populateDropdowns(surahs = []) {
+  surahList = surahs;
+  fillCustomList("start");
+  fillCustomList("end");
+
+  if (surahs.length) {
+    setSurah("start", surahs[0].name);
+    setSurah("end", surahs[surahs.length - 1].name);
+  }
+}
+
+/* ===============================
+   إنشاء القوائم
+================================ */
+function fillCustomList(type) {
+  const ul = document.querySelector(`#${type}Box ul`);
+  ul.innerHTML = "";
+  surahList.forEach(s => {
+    const li = document.createElement("li");
+    li.textContent = s.name;
+    li.onclick = () => setSurah(type, s.name);
+    ul.appendChild(li);
+  });
+}
+
+function setSurah(type, name) {
+  document.getElementById(type + "Surah").value = name;
+  document.querySelector(`#${type}Box .selected`).textContent = name;
+  document.querySelector(`#${type}Box .dropdown`).style.display = "none";
+  calculateFaces();
+}
+
+/* ===============================
+   حساب الأوجه
+================================ */
+function calculateFaces() {
+  const start = startSurah.value;
+  const end = endSurah.value;
+  if (!start || !end) return;
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "faces",
+      start,
+      end
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    facesResult.textContent = res.faces || 0;
+    tasmeeFaces.value = res.faces || 0;
+  });
+}
+
+/* ===============================
+   إرسال النموذج
+================================ */
+tasmeeForm.addEventListener("submit", e => {
+  e.preventDefault();
+
+  if (+tasmeeFaces.value <= 0) {
+    showToast("❌ عدد الأوجه غير صحيح", "error");
+    return;
+  }
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "submitTasmee",
+      name: tasmeeName.value,
+      lesson: tasmeeLesson.value,
+      review: tasmeeReview.value,
+      faces: tasmeeFaces.value
+    })
+  })
+  .then(() => {
+    showToast("✔️ تم الإرسال بنجاح", "success");
+    tasmeeForm.reset();
+  })
+  .catch(() => showToast("❌ فشل الإرسال", "error"));
+});
+
+/* ===============================
+   Toast
+================================ */
+function showToast(msg, type) {
+  toast.textContent = msg;
+  toast.className = `toast show ${type}`;
+  setTimeout(() => toast.classList.remove("show"), 3000);
+}
+</script>
+
+</body>
+</html>
