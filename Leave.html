@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بطاقة الإجازة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body { background:#f5f3ee; font-family:'Cairo', Tahoma, Arial; margin:0; padding:40px; }
+.card { max-width:600px; margin:auto; background:#fff; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.08); overflow:hidden; }
+.header { background:linear-gradient(135deg,#065f46,#047857); color:white; text-align:center; padding:32px 20px; }
+.header h1 { margin:0; font-size:28px; font-weight:700; }
+.header p { margin-top:10px; font-size:14px; opacity:0.9; }
+form { padding:30px; }
+.field { margin-bottom:22px; }
+label { display:block; font-weight:600; margin-bottom:6px; color:#064e3b; }
+label span { color:#b91c1c; }
+input[type="text"], input[type="date"] {
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  font-family:'Cairo';
+}
+.radio-group label { display:block; margin-bottom:8px; cursor:pointer; }
+.other-reason { display:none; margin-top:10px; }
+button {
+  width:100%;
+  background:#065f46;
+  color:white;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-size:16px;
+  font-family:'Cairo';
+  font-weight:600;
+  cursor:pointer;
+}
+button:hover { background:#047857; }
+
+.notification {
+  display:none;
+  margin-bottom:16px;
+  padding:12px;
+  border-radius:10px;
+  font-weight:600;
+  text-align:center;
+}
+.notification.success { background:#dcfce7; color:#065f46; }
+.notification.error { background:#fee2e2; color:#b91c1c; }
+
+.footer { text-align:center; padding:18px; font-size:14px; color:#065f46; background:#f0fdf4; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="header">
+    <h1>بطاقة الإجازة</h1>
+    <p>تقديم طلب إجازة من الطالبة</p>
+  </div>
+
+  <form id="leaveForm">
+    <div class="field">
+      <label>اسم الطالبة الثلاثي <span>*</span></label>
+      <input type="text" id="leaveName" required>
+    </div>
+
+    <div class="field">
+      <label>سبب الإجازة <span>*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="reason" value="المرض" onclick="toggleOther(false)"> المرض</label>
+        <label><input type="radio" name="reason" value="السفر" onclick="toggleOther(false)"> السفر</label>
+        <label><input type="radio" name="reason" value="مشكلة الإنترنت" onclick="toggleOther(false)"> مشكلة الإنترنت</label>
+        <label><input type="radio" name="reason" value="أخرى" onclick="toggleOther(true)"> أخرى</label>
+      </div>
+      <div class="other-reason" id="otherBox">
+        <input type="text" id="otherReason" placeholder="يرجى التوضيح">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>من تاريخ <span>*</span></label>
+      <input type="date" id="fromDate" required>
+    </div>
+
+    <div class="field">
+      <label>إلى تاريخ <span>*</span></label>
+      <input type="date" id="toDate" required>
+    </div>
+
+    <div id="msg" class="notification"></div>
+
+    <button type="submit" id="submitBtn">إرسال الطلب</button>
+  </form>
+
+  <div class="footer">نسأل الله التوفيق والسداد 🌿</div>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz63m4J4O_C8zZC2Lsuyvi1tMbvUz1vO4bkfi-KJQvHw9AFtsTKdBxmwSJj7j_OqnVD/exec";
+
+// إظهار / إخفاء خانة أخرى
+function toggleOther(show){
+  document.getElementById("otherBox").style.display = show ? "block" : "none";
+  if (!show) document.getElementById("otherReason").value = "";
+}
+
+// عرض رسالة
+function showMsg(text, type){
+  const box = document.getElementById("msg");
+  box.textContent = text;
+  box.className = "notification " + type;
+  box.style.display = "block";
+  setTimeout(() => box.style.display = "none", 3000);
+}
+
+// إرسال النموذج
+document.getElementById("leaveForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const name = leaveName.value.trim();
+  const reasonRadio = document.querySelector('input[name="reason"]:checked');
+  const fromDate = document.getElementById("fromDate").value;
+  const toDate = document.getElementById("toDate").value;
+  const btn = document.getElementById("submitBtn");
+
+  if (!reasonRadio) {
+    showMsg("❌ يرجى اختيار سبب الإجازة", "error");
+    return;
+  }
+
+  let reason = reasonRadio.value;
+  if (reason === "أخرى") {
+    reason = document.getElementById("otherReason").value.trim();
+    if (!reason) {
+      showMsg("❌ يرجى توضيح سبب الإجازة", "error");
+      return;
+    }
+  }
+
+  if (fromDate > toDate) {
+    showMsg("❌ تاريخ البداية يجب أن يسبق تاريخ النهاية", "error");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري الإرسال...";
+  btn.style.background = "#9ca3af";
+
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "leave",
+      name,
+      reason,
+      fromDate,
+      toDate
+    })
+  })
+  .then(r => r.text())
+  .then(() => {
+    showMsg("✔️ تم إرسال الطلب بنجاح", "success");
+    e.target.reset();
+    toggleOther(false);
+  })
+  .catch(() => showMsg("❌ حدث خطأ أثناء الإرسال", "error"))
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = "إرسال الطلب";
+    btn.style.background = "#065f46";
+  });
+});
+</script>
+
+</body>
+</html>
