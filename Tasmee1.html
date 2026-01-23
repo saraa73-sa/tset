@@ -26,9 +26,6 @@ button:hover { background:#047857; }
 .custom-select {
   position: relative;
   flex: 1;
-  border: 2px solid #e5e7eb; /* اللون الافتراضي */
-  border-radius: 8px;
-  transition: border-color 0.3s;
 }
 
 .selected {
@@ -294,49 +291,37 @@ function setSurah(type, name) {
 function calculateFaces() {
   const start = document.getElementById("startSurah").value;
   const end = document.getElementById("endSurah").value;
-  const btn = document.querySelector('button[type="submit"]');
-  const startBox = document.getElementById("startBox");
-  const endBox = document.getElementById("endBox");
+  const btn = document.querySelector('button[type="submit"]'); // جلب الزر
 
   if (!start || !end) return;
 
-  // تعطيل الزر مؤقتاً أثناء الحساب
+  // 1. تعطيل الزر ومنع الإرسال مؤقتاً
   btn.disabled = true;
-  btn.textContent = "⏳ جاري الحساب...";
+  btn.textContent = "⏳ جاري حساب الأوجه...";
 
   fetch(`${WEB_APP_URL}?action=faces&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
-    .then(r => r.json())
-    .then(res => {
+    .then(r => r.text()) // نستخدم text أولاً للتأكد من الرد
+    .then(data => {
+      const res = JSON.parse(data);
       if (res.error) {
-        // 🔴 في حال وجود خطأ (سورة البداية بعد النهاية)
-        startBox.style.borderColor = "#dc2626"; // لون أحمر
-        endBox.style.borderColor = "#dc2626";
+        showToast("⚠️ " + res.message, "error");
         facesResult.textContent = "0";
         tasmeeFaces.value = "0";
-        showToast("⚠️ " + res.message, "error");
-        
-        // إبقاء الزر معطلاً لمنع الإرسال الخاطئ
-        btn.disabled = true;
-        btn.textContent = "⚠️ خطأ في ترتيب السور";
       } else {
-        // 🟢 في حال كان الترتيب صحيحاً
-        startBox.style.borderColor = "#e5e7eb"; // إعادة اللون الطبيعي (رمادي فاتح)
-        endBox.style.borderColor = "#e5e7eb";
         facesResult.textContent = res.faces || 0;
         tasmeeFaces.value = res.faces || 0;
         
-        // إعادة تفعيل الزر
+        // 2. إعادة تفعيل الزر بعد نجاح الحساب
         btn.disabled = false;
         btn.textContent = "إرسال البطاقة";
       }
     })
     .catch(() => {
-      showToast("❌ فشل الاتصال"، "error");
+      showToast("❌ فشل حساب عدد الأوجه", "error");
       btn.disabled = false;
       btn.textContent = "إرسال البطاقة";
     });
 }
-
 
 
 /* ===============================
