@@ -364,22 +364,31 @@ function filterSurahs(input, type) {
 /* ===============================
    إرسال النموذج
 ================================ */
+/* ===============================
+   إرسال النموذج (البيانات المحددة فقط)
+================================ */
 tasmeeForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  if (+tasmeeFaces.value <= 0) {
-    showToast("❌ عدد الأوجه غير صحيح", "error");
+  const btn = e.target.querySelector('button[type="submit"]');
+
+  // التأكد من وجود عدد أوجه صحيح
+  if (!tasmeeFaces.value || +tasmeeFaces.value <= 0) {
+    showToast("❌ يرجى اختيار السور لحساب الأوجه", "error");
     return;
   }
 
+  // تغيير حالة الزر أثناء الإرسال
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري الإرسال...";
+
+  // إرسال الحقول المطلوبة فقط
   const data = new URLSearchParams({
     action: "tasmee",
-    name: tasmeeName.value.trim(),
-    lesson: tasmeeLesson.value.trim(),
-    review: tasmeeReview.value.trim(),
-    faces: tasmeeFaces.value,
-    startSurah: startSurah.value,
-    endSurah: endSurah.value
+    name: document.getElementById("tasmeeName").value.trim(),
+    lesson: document.getElementById("tasmeeLesson").value.trim(),
+    review: document.getElementById("tasmeeReview").value.trim(),
+    faces: document.getElementById("tasmeeFaces").value
   });
 
   fetch(WEB_APP_URL, {
@@ -389,11 +398,19 @@ tasmeeForm.addEventListener("submit", e => {
   .then(r => r.text())
   .then(msg => {
     if (msg.startsWith("❌")) throw new Error(msg);
-    showToast("✔️ تم إرسال بطاقة التسميع بنجاح", "success");
-    tasmeeForm.reset();
+    showToast("✔️ تم إرسال البطاقة بنجاح", "success");
+    e.target.reset(); // إعادة تعيين النموذج
+    document.getElementById("facesResult").textContent = "0"; // تصفير العداد
   })
-  .catch(() => showToast("❌ فشل الإرسال", "error"));
+  .catch((err) => {
+    showToast("❌ فشل الإرسال: " + err.message, "error");
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.textContent = "إرسال البطاقة";
+  });
 });
+
 
 /* ===============================
    Toast
