@@ -100,7 +100,7 @@ button:hover { background:#047857; }
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz63m4J4O_C8zZC2Lsuyvi1tMbvUz1vO4bkfi-KJQvHw9AFtsTKdBxmwSJj7j_OqnVD/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfgievN2g-Y5I4kHpv8YHEeo7_dzQcedxE7yqbFRJM-8Ia5CtssBLdAY0FUota951h/exec";
 
 // إظهار / إخفاء خانة أخرى
 function toggleOther(show){
@@ -150,24 +150,27 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
   btn.textContent = "⏳ جاري الإرسال...";
   btn.style.background = "#9ca3af";
 
+  // ✅ الإرسال بالطريقة الصحيحة
+  const formData = new URLSearchParams();
+  formData.append("action", "leave");
+  formData.append("name", name);
+  formData.append("reason", reason);
+  formData.append("fromDate", fromDate);
+  formData.append("toDate", toDate);
+
   fetch(WEB_APP_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "leave",
-      name,
-      reason,
-      fromDate,
-      toDate
-    })
+    body: formData
   })
   .then(r => r.text())
-  .then(() => {
+  .then(msg => {
+    if (msg.startsWith("❌")) throw new Error(msg);
+
     showMsg("✔️ تم إرسال الطلب بنجاح", "success");
     e.target.reset();
     toggleOther(false);
   })
-  .catch(() => showMsg("❌ حدث خطأ أثناء الإرسال", "error"))
+  .catch(err => showMsg(err.message, "error"))
   .finally(() => {
     btn.disabled = false;
     btn.textContent = "إرسال الطلب";
