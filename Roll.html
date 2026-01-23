@@ -54,10 +54,9 @@ button:hover { background:#047857; }
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz63m4J4O_C8zZC2Lsuyvi1tMbvUz1vO4bkfi-KJQvHw9AFtsTKdBxmwSJj7j_OqnVD/exec"; // ← ضع رابطك هنا
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfgievN2g-Y5I4kHpv8YHEeo7_dzQcedxE7yqbFRJM-8Ia5CtssBLdAY0FUota951h/exec"; // رابط Web App
 
-
-// 1) جلب الأرقام المتاحة
+// 1) تحميل أرقام الدور المتاحة
 function loadAvailableNumbers() {
   const select = document.getElementById("dorNumber");
 
@@ -65,7 +64,6 @@ function loadAvailableNumbers() {
     .then(r => r.json())
     .then(numbers => {
       select.innerHTML = '<option value="">اختر الرقم</option>';
-
       if (!numbers || numbers.length === 0) {
         select.innerHTML = '<option value="">⚠️ لا توجد أرقام متاحة</option>';
       } else {
@@ -84,7 +82,6 @@ function loadAvailableNumbers() {
 
 window.onload = loadAvailableNumbers;
 
-
 // 2) إرسال النموذج
 document.getElementById("dorForm").addEventListener("submit", function(e) {
   e.preventDefault();
@@ -99,28 +96,23 @@ document.getElementById("dorForm").addEventListener("submit", function(e) {
   btn.textContent = "⏳ جاري الحجز والتحقق...";
   btn.style.backgroundColor = "#9ca3af";
 
-fetch(WEB_APP_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    action: "roll",
-    name: name,
-    rollNumber: number
-  })
-})
-.then(r => r.text())
-.then(msg => {
-  if (msg.startsWith("❌")) throw new Error(msg);
+const formData = new URLSearchParams();
+formData.append('action', 'roll');
+formData.append('name', name);
+formData.append('rollNumber', number);
 
-  btn.textContent = "✔️ تم الحجز بنجاح";
-  btn.style.backgroundColor = "#059669";
+fetch(WEB_APP_URL, {
+  method: 'POST',
+  body: formData
 })
-.catch(err => {
-  btn.textContent = "❌ " + err.message;
-  btn.style.backgroundColor = "#dc2626";
-});
+  .then(r => r.text())
+  .then(msg => {
+    if (msg.startsWith("❌")) throw new Error(msg);
+
+    btn.textContent = "✔️ تم الحجز بنجاح";
+    btn.style.backgroundColor = "#059669";
+
+    // إعادة تعيين الحقول
     document.getElementById("dorName").value = "";
     loadAvailableNumbers();
 
@@ -129,9 +121,10 @@ fetch(WEB_APP_URL, {
       btn.textContent = "إرسال البطاقة";
       btn.style.backgroundColor = "#065f46";
     }, 5000);
+
   })
   .catch(err => {
-    btn.textContent = err.message.replace("❌", "❌ ");
+    btn.textContent = "❌ " + err.message;
     btn.style.backgroundColor = "#dc2626";
 
     setTimeout(() => {
@@ -146,3 +139,6 @@ fetch(WEB_APP_URL, {
 
 </body>
 </html>
+
+
+
