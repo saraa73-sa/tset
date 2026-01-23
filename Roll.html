@@ -6,26 +6,161 @@
 <title>بطاقة الدور</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body { background:#f5f3ee; font-family:'Cairo', Tahoma, Arial; margin:0; padding:40px; }
-.card { max-width:600px; margin:auto; background:#fff; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.08); overflow:hidden; }
-.header { background:linear-gradient(135deg,#065f46,#047857); color:white; text-align:center; padding:32px 20px; }
-.header h1 { margin:0; font-size:28px; font-weight:700; }
-.header p { margin-top:10px; font-size:14px; opacity:0.9; }
-form { padding:30px; }
-.field { margin-bottom:22px; }
-label { display:block; font-weight:600; margin-bottom:6px; color:#064e3b; }
-label span { color:#b91c1c; }
-input[type="text"], select {
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #d1d5db;
-  font-size:14px;
-  font-family:'Cairo';
+/* ===============================
+   قاعدة للجميع
+=============================== */
+* {
+  box-sizing: border-box;
+  font-family: 'Cairo', Tahoma, Arial;
 }
-button { width:100%; background:#065f46; color:white; border:none; padding:14px; border-radius:12px; font-size:16px; font-family:'Cairo'; font-weight:600; cursor:pointer; transition:0.3s; }
-button:hover { background:#047857; }
-.footer { text-align:center; padding:18px; font-size:14px; color:#065f46; background:#f0fdf4; }
+
+/* ===============================
+   الجسم والبطاقة
+=============================== */
+body {
+  background: #f5f3ee;
+  margin: 0;
+  padding: 40px;
+}
+
+.card {
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg,#065f46,#047857);
+  color: white;
+  text-align: center;
+  padding: 32px 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header p {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* ===============================
+   الحقول العامة
+=============================== */
+form {
+  padding: 30px;
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #064e3b;
+}
+
+label span {
+  color: #b91c1c;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+  width: 100%;
+  height: 44px; /* توحيد ارتفاع الحقول */
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+/* ===============================
+   radio
+=============================== */
+.radio-group label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.radio-group input[type="radio"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+/* ===============================
+   خانة أخرى
+=============================== */
+.other-reason {
+  display: none;
+  margin-top: 10px;
+}
+
+/* ===============================
+   زر الإرسال
+=============================== */
+button {
+  width: 100%;
+  height: 44px; /* نفس ارتفاع الحقول */
+  background: #065f46;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #047857;
+}
+
+/* ===============================
+   إشعارات النجاح / الخطأ
+=============================== */
+.notification {
+  display: none;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.notification.success {
+  background: #dcfce7;
+  color: #065f46;
+}
+
+.notification.error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ===============================
+   الفوتر
+=============================== */
+.footer {
+  text-align: center;
+  padding: 18px;
+  font-size: 14px;
+  color: #065f46;
+  background: #f0fdf4;
+}
 </style>
 </head>
 <body>
