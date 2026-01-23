@@ -330,17 +330,34 @@ document.addEventListener("click", e => {
   /* ===============================
 دالة البحث لتصفية السور داخل القائمة
   ================================ */
+/* ===============================
+   دالة البحث الذكي (تجاهل الهمزات)
+================================ */
 function filterSurahs(input, type) {
-  const filter = input.value.trim();
+  // دالة لتنظيف النص من الهمزات والتشكيل
+  const normalize = (text) => {
+    return text
+      .replace(/[أإآأ]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي")
+      .replace(/[\u064B-\u065F]/g, ""); // حذف التشكيل إن وجد
+  };
+
+  const filter = normalize(input.value.trim());
   const ul = document.querySelector(`#${type}Box ul`);
   const li = ul.getElementsByTagName("li");
 
   for (let i = 0; i < li.length; i++) {
-    const text = li[i].textContent || li[i].innerText;
-    // إظهار العنصر إذا كان يحتوي على نص البحث، وإخفاؤه إذا لم يحتوي
-    li[i].style.display = text.includes(filter) ? "" : "none";
+    const text = normalize(li[i].textContent || li[i].innerText);
+    // البحث في النص المنظف
+    if (text.includes(filter)) {
+      li[i].style.display = "";
+    } else {
+      li[i].style.display = "none";
+    }
   }
 }
+
 
   
 
