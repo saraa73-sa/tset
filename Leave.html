@@ -211,7 +211,7 @@ button:hover {
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfgievN2g-Y5I4kHpv8YHEeo7_dzQcedxE7yqbFRJM-8Ia5CtssBLdAY0FUota951h/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbfgievN2g-Y5I4kHpv8YHEeo7_dzQcedxE7yqbFRJM-8Ia5CtssBLdAY0FUota951h/exec";
 
 // إظهار / إخفاء خانة أخرى
 function toggleOther(show){
@@ -223,7 +223,7 @@ function toggleOther(show){
 document.getElementById("leaveForm").addEventListener("submit", function(e){
   e.preventDefault();
 
-  const name = leaveName.value.trim();
+  const name = document.getElementById("leaveName").value.trim();
   const reasonRadio = document.querySelector('input[name="reason"]:checked');
   const fromDate = document.getElementById("fromDate").value;
   const toDate = document.getElementById("toDate").value;
@@ -258,22 +258,23 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
   btn.textContent = "⏳ جاري الإرسال...";
   btn.style.background = "#9ca3af";
 
+  // إرسال البيانات بنفس طريقة بطاقة الدور لتجنب مشاكل CORS و JSON
+  const formData = new URLSearchParams();
+  formData.append('action', 'leave');
+  formData.append('name', name);
+  formData.append('reason', reason);
+  formData.append('fromDate', fromDate);
+  formData.append('toDate', toDate);
+
   fetch(WEB_APP_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "leave",
-      name,
-      reason,
-      fromDate,
-      toDate
-    })
+    method: 'POST',
+    body: formData
   })
   .then(r => r.text())
   .then(msg => {
     if (msg.startsWith("❌")) throw new Error(msg);
 
-    btn.textContent = "✔️ تم إرسال الطلب بنجاح";
+    btn.textContent = msg; // يظهر رسالة Web App مباشرة
     btn.style.background = "#059669";
 
     // إعادة تعيين الحقول
@@ -286,9 +287,10 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
       btn.style.background = "#065f46";
     }, 3000);
   })
-  .catch(() => {
+  .catch(err => {
     btn.textContent = "❌ حدث خطأ أثناء الإرسال";
     btn.style.background = "#dc2626";
+
     setTimeout(() => {
       btn.disabled = false;
       btn.textContent = "إرسال الطلب";
