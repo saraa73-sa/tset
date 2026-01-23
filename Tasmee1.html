@@ -289,18 +289,40 @@ function setSurah(type, name) {
    حساب الأوجه
 ================================ */
 function calculateFaces() {
-  const start = startSurah.value;
-  const end = endSurah.value;
+  const start = document.getElementById("startSurah").value;
+  const end = document.getElementById("endSurah").value;
+  const btn = document.querySelector('button[type="submit"]'); // جلب الزر
+
   if (!start || !end) return;
 
+  // 1. تعطيل الزر ومنع الإرسال مؤقتاً
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري حساب الأوجه...";
+
   fetch(`${WEB_APP_URL}?action=faces&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
-    .then(r => r.json())
-    .then(res => {
-      facesResult.textContent = res.faces || 0;
-      tasmeeFaces.value = res.faces || 0;
+    .then(r => r.text()) // نستخدم text أولاً للتأكد من الرد
+    .then(data => {
+      const res = JSON.parse(data);
+      if (res.error) {
+        showToast("⚠️ " + res.message, "error");
+        facesResult.textContent = "0";
+        tasmeeFaces.value = "0";
+      } else {
+        facesResult.textContent = res.faces || 0;
+        tasmeeFaces.value = res.faces || 0;
+        
+        // 2. إعادة تفعيل الزر بعد نجاح الحساب
+        btn.disabled = false;
+        btn.textContent = "إرسال البطاقة";
+      }
     })
-    .catch(() => showToast("❌ فشل حساب الأوجه", "error"));
+    .catch(() => {
+      showToast("❌ فشل حساب عدد الأوجه", "error");
+      btn.disabled = false;
+      btn.textContent = "إرسال البطاقة";
+    });
 }
+
 
 /* ===============================
    فتح / إغلاق القائمة
@@ -369,12 +391,18 @@ function filterSurahs(input, type) {
 ================================ */
 tasmeeForm.addEventListener("submit", e => {
   e.preventDefault();
+  
+    // شرط إضافي: إذا كان الحساب لم يكتمل أو القيمة صفر
+  if (!tasmeeFaces.value || parseFloat(tasmeeFaces.value) <= 0) {
+    showToast("⚠️ يرجى الانتظار حتى يتم حساب الأوجه بشكل صحيح", "error");
+    return;
+  }
 
   const btn = e.target.querySelector('button[type="submit"]');
 
   // التأكد من وجود عدد أوجه صحيح
   if (!tasmeeFaces.value || +tasmeeFaces.value <= 0) {
-    showToast("❌ (ويجب أن تكون سورة البداية قبل سورة النهاية)يرجى اختيار السور لحساب الأوجه", "error");
+    showToast("❌ يرجى اختيار السور لحساب الأوجه", "error");
     return;
   }
 
