@@ -219,15 +219,6 @@ function toggleOther(show){
   if (!show) document.getElementById("otherReason").value = "";
 }
 
-// عرض رسالة
-function showMsg(text, type){
-  const box = document.getElementById("msg");
-  box.textContent = text;
-  box.className = "notification " + type;
-  box.style.display = "block";
-  setTimeout(() => box.style.display = "none", 3000);
-}
-
 // إرسال النموذج
 document.getElementById("leaveForm").addEventListener("submit", function(e){
   e.preventDefault();
@@ -239,7 +230,9 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
   const btn = document.getElementById("submitBtn");
 
   if (!reasonRadio) {
-    showMsg("❌ يرجى اختيار سبب الإجازة", "error");
+    btn.textContent = "❌ يرجى اختيار سبب الإجازة";
+    btn.style.background = "#dc2626";
+    setTimeout(() => { btn.textContent = "إرسال الطلب"; btn.style.background="#065f46"; }, 3000);
     return;
   }
 
@@ -247,13 +240,17 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
   if (reason === "أخرى") {
     reason = document.getElementById("otherReason").value.trim();
     if (!reason) {
-      showMsg("❌ يرجى توضيح سبب الإجازة", "error");
+      btn.textContent = "❌ يرجى توضيح سبب الإجازة";
+      btn.style.background = "#dc2626";
+      setTimeout(() => { btn.textContent = "إرسال الطلب"; btn.style.background="#065f46"; }, 3000);
       return;
     }
   }
 
   if (fromDate > toDate) {
-    showMsg("❌ تاريخ البداية يجب أن يسبق تاريخ النهاية", "error");
+    btn.textContent = "❌ تاريخ البداية يجب أن يسبق النهاية";
+    btn.style.background = "#dc2626";
+    setTimeout(() => { btn.textContent = "إرسال الطلب"; btn.style.background="#065f46"; }, 3000);
     return;
   }
 
@@ -261,31 +258,42 @@ document.getElementById("leaveForm").addEventListener("submit", function(e){
   btn.textContent = "⏳ جاري الإرسال...";
   btn.style.background = "#9ca3af";
 
-  // ✅ الإرسال بالطريقة الصحيحة
-  const formData = new URLSearchParams();
-  formData.append("action", "leave");
-  formData.append("name", name);
-  formData.append("reason", reason);
-  formData.append("fromDate", fromDate);
-  formData.append("toDate", toDate);
-
   fetch(WEB_APP_URL, {
     method: "POST",
-    body: formData
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "leave",
+      name,
+      reason,
+      fromDate,
+      toDate
+    })
   })
   .then(r => r.text())
   .then(msg => {
     if (msg.startsWith("❌")) throw new Error(msg);
 
-    showMsg("✔️ تم إرسال الطلب بنجاح", "success");
+    btn.textContent = "✔️ تم إرسال الطلب بنجاح";
+    btn.style.background = "#059669";
+
+    // إعادة تعيين الحقول
     e.target.reset();
     toggleOther(false);
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = "إرسال الطلب";
+      btn.style.background = "#065f46";
+    }, 3000);
   })
-  .catch(err => showMsg(err.message, "error"))
-  .finally(() => {
-    btn.disabled = false;
-    btn.textContent = "إرسال الطلب";
-    btn.style.background = "#065f46";
+  .catch(() => {
+    btn.textContent = "❌ حدث خطأ أثناء الإرسال";
+    btn.style.background = "#dc2626";
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = "إرسال الطلب";
+      btn.style.background = "#065f46";
+    }, 5000);
   });
 });
 </script>
