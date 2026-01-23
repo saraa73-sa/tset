@@ -303,6 +303,32 @@ function calculateFaces() {
 }
 
 /* ===============================
+   فتح / إغلاق القائمة
+================================ */
+function toggleList(type) {
+  const box = document.getElementById(type + "Box");
+  const dropdown = box.querySelector(".dropdown");
+
+  // إغلاق القوائم الأخرى
+  document.querySelectorAll(".dropdown").forEach(d => {
+    if (d !== dropdown) d.style.display = "none";
+  });
+
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
+}
+
+/* إغلاق القوائم عند الضغط خارجها */
+document.addEventListener("click", e => {
+  if (!e.target.closest(".custom-select")) {
+    document.querySelectorAll(".dropdown").forEach(d => {
+      d.style.display = "none";
+    });
+  }
+});
+  
+
+/* ===============================
    إرسال النموذج
 ================================ */
 tasmeeForm.addEventListener("submit", e => {
