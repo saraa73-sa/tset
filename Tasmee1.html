@@ -236,7 +236,7 @@ button:hover { background:#047857; }
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz63m4J4O_C8zZC2Lsuyvi1tMbvUz1vO4bkfi-KJQvHw9AFtsTKdBxmwSJj7j_OqnVD/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzfgievN2g-Y5I4kHpv8YHEeo7_dzQcedxE7yqbFRJM-8Ia5CtssBLdAY0FUota951h/exec";
 
 /* ===============================
    تحميل السور
@@ -293,19 +293,13 @@ function calculateFaces() {
   const end = endSurah.value;
   if (!start || !end) return;
 
-  fetch(WEB_APP_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "faces",
-      start,
-      end
+  fetch(`${WEB_APP_URL}?action=faces&start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
+    .then(r => r.json())
+    .then(res => {
+      facesResult.textContent = res.faces || 0;
+      tasmeeFaces.value = res.faces || 0;
     })
-  })
-  .then(r => r.json())
-  .then(res => {
-    facesResult.textContent = res.faces || 0;
-    tasmeeFaces.value = res.faces || 0;
-  });
+    .catch(() => showToast("❌ فشل حساب الأوجه", "error"));
 }
 
 /* ===============================
@@ -319,18 +313,24 @@ tasmeeForm.addEventListener("submit", e => {
     return;
   }
 
+  const data = new URLSearchParams({
+    action: "tasmee",
+    name: tasmeeName.value.trim(),
+    lesson: tasmeeLesson.value.trim(),
+    review: tasmeeReview.value.trim(),
+    faces: tasmeeFaces.value,
+    startSurah: startSurah.value,
+    endSurah: endSurah.value
+  });
+
   fetch(WEB_APP_URL, {
     method: "POST",
-    body: JSON.stringify({
-      action: "submitTasmee",
-      name: tasmeeName.value,
-      lesson: tasmeeLesson.value,
-      review: tasmeeReview.value,
-      faces: tasmeeFaces.value
-    })
+    body: data
   })
-  .then(() => {
-    showToast("✔️ تم الإرسال بنجاح", "success");
+  .then(r => r.text())
+  .then(msg => {
+    if (msg.startsWith("❌")) throw new Error(msg);
+    showToast("✔️ تم إرسال بطاقة التسميع بنجاح", "success");
     tasmeeForm.reset();
   })
   .catch(() => showToast("❌ فشل الإرسال", "error"));
