@@ -374,7 +374,7 @@ tasmeeForm.addEventListener("submit", e => {
 
   // التأكد من وجود عدد أوجه صحيح
   if (!tasmeeFaces.value || +tasmeeFaces.value <= 0) {
-    showToast("❌ يرجى اختيار السور لحساب الأوجه", "error");
+    showToast("❌ (ويجب أن تكون سورة البداية قبل سورة النهاية)يرجى اختيار السور لحساب الأوجه", "error");
     return;
   }
 
