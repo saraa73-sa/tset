@@ -5,24 +5,147 @@
 <title>بطاقة التسميع</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body { background:#f5f3ee; font-family:'Cairo', Tahoma, Arial; margin:0; padding:40px; }
-.card { max-width:600px; margin:auto; background:#fff; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.08); overflow:hidden; }
-.header { background:linear-gradient(135deg,#065f46,#047857); color:white; text-align:center; padding:32px 20px; }
-.header h1 { margin:0; font-size:28px; font-weight:700; }
-.header p { margin-top:10px; font-size:14px; opacity:0.9; }
-form { padding:30px; }
-.field { margin-bottom:22px; }
-label { display:block; font-weight:600; margin-bottom:6px; color:#064e3b; }
-label span { color:#b91c1c; }
-small { display:block; color:#555; font-size:13px; margin-bottom:8px; line-height:1.6; }
-input[type="text"], input[type="number"], select { width:100%; padding:12px; border-radius:10px; border:1px solid #d1d5db; font-size:14px; font-family:'Cairo'; box-sizing:border-box; }
-select { cursor:pointer; }
-button { width:100%; background:#065f46; color:white; border:none; padding:14px; border-radius:12px; font-size:16px; font-family:'Cairo'; font-weight:600; cursor:pointer; transition:0.3s; }
-button:hover { background:#047857; }
-.footer { text-align:center; padding:18px; font-size:14px; color:#065f46; background:#f0fdf4; }
-.row { display:flex; gap:10px; }
-.row select { flex:1; }
-.row input {  margin-bottom:6px;}
+/* ===============================
+   Base & Body
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f5f3ee;
+  font-family: 'Cairo', Tahoma, Arial;
+  margin: 0;
+  padding: 40px;
+}
+
+/* ===============================
+   Card Layout
+================================ */
+.card {
+  max-width: 600px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #065f46, #047857);
+  color: #ffffff;
+  text-align: center;
+  padding: 32px 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header p {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* ===============================
+   Form
+================================ */
+form {
+  padding: 30px;
+}
+
+.field {
+  margin-bottom: 22px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #064e3b;
+}
+
+label span {
+  color: #b91c1c;
+}
+
+small {
+  display: block;
+  color: #555;
+  font-size: 13px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+/* ===============================
+   Inputs
+================================ */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  font-family: 'Cairo';
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #047857;
+}
+
+/* ===============================
+   Button
+================================ */
+button {
+  width: 100%;
+  background: #065f46;
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: 'Cairo';
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #047857;
+}
+
+button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   Footer
+================================ */
+.footer {
+  text-align: center;
+  padding: 18px;
+  font-size: 14px;
+  color: #065f46;
+  background: #f0fdf4;
+}
+
+/* ===============================
+   Custom Select
+================================ */
+.row {
+  display: flex;
+  gap: 10px;
+}
+
 .custom-select {
   position: relative;
   flex: 1;
@@ -32,7 +155,7 @@ button:hover { background:#047857; }
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 10px;
-  background: #fff;
+  background: #ffffff;
   cursor: pointer;
 }
 
@@ -42,7 +165,7 @@ button:hover { background:#047857; }
   top: 105%;
   right: 0;
   left: 0;
-  background: white;
+  background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 10px;
   max-height: 260px;
@@ -55,7 +178,6 @@ button:hover { background:#047857; }
   border-bottom: 1px solid #e5e7eb;
   padding: 10px;
   width: 100%;
-  outline: none;
 }
 
 .dropdown ul {
@@ -75,6 +197,23 @@ button:hover { background:#047857; }
   background: #f0fdf4;
 }
 
+/* ===============================
+   Result Box
+================================ */
+.result-box {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f0fdf4;
+  border: 1px solid #065f46;
+  border-radius: 8px;
+  color: #065f46;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ===============================
+   Toast Notifications
+================================ */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -84,11 +223,10 @@ button:hover { background:#047857; }
   max-width: 90%;
   padding: 14px 18px;
   border-radius: 12px;
-  font-family: 'Cairo';
   font-size: 15px;
   font-weight: 600;
   text-align: center;
-  color: white;
+  color: #ffffff;
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
@@ -100,71 +238,10 @@ button:hover { background:#047857; }
   bottom: 40px;
 }
 
-.toast.success {
-  background: #059669;
-}
-
-.toast.error {
-  background: #dc2626;
-}
-
-  .toast.warning {
-  background: #f59e0b;
-}
-
-.toast.info {
-  background: #065f46;
-}
-
-.custom-select {
-  position: relative;
-}
-
-.dropdown {
-  display: none;
-  position: absolute;
-  background: white;
-  width: 100%;
-  border: 1px solid #ccc;
-  z-index: 999;
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.dropdown ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.dropdown li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.dropdown li:hover {
-  background: #f3f4f6;
-}
-
-.selected {
-  padding: 12px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background: #fff;
-}
-
-.result-box {
-  margin-top:10px; 
-  padding:10px; 
-  background:#f0fdf4; 
-  border:1px solid #065f46;  /* اللون الطبيعي */
-  border-radius:6px; 
-  color:#065f46; 
-  font-weight:600; 
-  text-align:center; 
-  transition: border-color 0.3s ease, color 0.3s ease; /* تأثير سلس */
-}
-
+.toast.success { background: #059669; }
+.toast.error   { background: #dc2626; }
+.toast.warning { background: #f59e0b; }
+.toast.info    { background: #065f46; }
 </style>
 </head>
 <body>
