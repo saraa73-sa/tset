@@ -108,6 +108,10 @@ button:hover { background:#047857; }
   background: #dc2626;
 }
 
+  .toast.warning {
+  background: #f59e0b;
+}
+
 .toast.info {
   background: #065f46;
 }
@@ -394,7 +398,7 @@ tasmeeForm.addEventListener("submit", e => {
   
     // شرط إضافي: إذا كان الحساب لم يكتمل أو القيمة صفر
   if (!tasmeeFaces.value || parseFloat(tasmeeFaces.value) <= 0) {
-    showToast("⚠️ يرجى الانتظار حتى يتم حساب الأوجه بشكل صحيح", "error");
+    showToast("⚠️ يرجى الانتظار حتى يتم حساب الأوجه بشكل صحيح", "warning");
     return;
   }
 
